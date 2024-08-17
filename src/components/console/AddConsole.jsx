@@ -69,6 +69,7 @@ const AddConsole = () => {
   return (
     <>
       <section className="container mt-5 mb-5">
+        <p>Test </p>
         <div className="row justify-content-center">
           <div className="col-md-8 col-lg-6">
             <h2 className="mt-5 mb-2">Add a New Console</h2>
