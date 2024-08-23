@@ -1,55 +1,77 @@
-import React, { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvider";
 
-const NavBar = () => {
-  const [showAccount, setShowAccount] = useState(false);
+const Navbar = () => {
+  const { user, handleLogout } = useAuth();
+  const navigate = useNavigate();
 
-  const handleAccountClick = () => {
-    setShowAccount(!showAccount);
+  const onLogout = () => {
+    handleLogout();
+    navigate("/login"); // Redirect to login after logout
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary px-5 shadow mt-5 sticky-top w-100">
-      <div className="container-fluid">
-        <Link to={"/"} className="navbar-brand">
-          <span className="store-color">Jia's Console Renter</span>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container">
+        <Link className="navbar-brand" to="/">
+          Jia Console's Renter
         </Link>
-
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarScroll"
-          aria-controls="navbarScroll"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
-        <div className="collapse navbar-collapse" id="navbarScroll">
-          <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to={"/browse-consoles"}>
-                Browse all consoles
-              </NavLink>
+              <Link className="nav-link" to="/browse-consoles">
+                Consoles
+              </Link>
             </li>
-
             <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to={"/admin"}>
-                Admin
-              </NavLink>
+              <Link className="nav-link" to="/find-renting">
+                Confirmation Code
+              </Link>
             </li>
+            {}
+            {user && user.roles.includes("ROLE_ADMIN") && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Admin Panel
+                </Link>
+              </li>
+            )}
           </ul>
-
-          <ul className="d-flex navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" to={"/find-renting"}>
-                Find My Renting
-              </NavLink>
-            </li>
-
-
+          <ul className="navbar-nav ms-auto">
+            {" "}
+            {}
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#!" onClick={onLogout}>
+                    Logout
+                  </a>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>
@@ -57,4 +79,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default Navbar;

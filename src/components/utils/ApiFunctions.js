@@ -3,7 +3,13 @@ import axios from "axios";
 export const api = axios.create({
   baseURL: "http://localhost:8080",
 });
-
+export const getHeader = () => {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+};
 /* This function adds a new console to the database */
 export async function addConsole(
   photo,
@@ -18,14 +24,18 @@ export async function addConsole(
     formData.append("consoleType", consoleType);
     formData.append("consolePrice", consolePrice);
 
-    const response = await api.post("/consoles/add", formData);
+    const response = await api.post("/consoles/add", formData, {
+      headers: {
+        ...getHeader(), // Include token in headers
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.status === 201 || response.status === 200;
   } catch (error) {
     console.error("Error adding console:", error);
     return false;
   }
 }
-
 /* This function gets all console types from the database */
 export async function getConsoleTypes() {
   try {
@@ -138,5 +148,74 @@ export async function cancelRenting(rentingId) {
     return result.data;
   } catch (error) {
     throw new Error(`Error canceling booking : ${error.message}`);
+  }
+}
+
+// Add other exports if needed
+export async function registerUser(registration) {
+  try {
+    const response = await api.post("/auth/register-user", registration);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data);
+    } else {
+      throw new Error(`User registration error: ${error.message}`);
+    }
+  }
+}
+// utils/ApiFunctions.js
+// Example of how you might handle the response
+export const loginUser = async (loginData) => {
+  try {
+    const response = await fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data; // Ensure this returns an object with the token property
+    } else {
+      console.error("Login failed:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during login API call:", error);
+    return null;
+  }
+};
+
+export async function getUserProfile(userId, token) {
+  try {
+    const response = await api.get(`users/profile/${userId}`, {
+      headers: getHeader(),
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function deleteUser(userId) {
+  try {
+    const response = await api.delete(`/users/delete/${userId}`, {
+      headers: getHeader(),
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+}
+
+export async function getUser(userId, token) {
+  try {
+    const response = await api.get(`/users/${userId}`, {
+      headers: getHeader(),
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 }

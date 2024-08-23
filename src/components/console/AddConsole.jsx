@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-
 import { addConsole } from "../utils/ApiFunctions";
-import ConsoleTypeSelector from "../common/ConsoleTypeSelector";
 import { Link } from "react-router-dom";
 
 const AddConsole = () => {
@@ -44,7 +42,7 @@ const AddConsole = () => {
         newConsole.consoleType,
         newConsole.consolePrice
       );
-      if (success !== undefined) {
+      if (success) {
         setSuccessMessage("A new console was added to the database!");
         setNewConsole({
           photo: null,
@@ -61,6 +59,7 @@ const AddConsole = () => {
       setErrorMessage(error.message);
     }
   };
+
   setTimeout(() => {
     setSuccessMessage("");
     setErrorMessage("");
@@ -69,7 +68,6 @@ const AddConsole = () => {
   return (
     <>
       <section className="container mt-5 mb-5">
-        <p>Test </p>
         <div className="row justify-content-center">
           <div className="col-md-8 col-lg-6">
             <h2 className="mt-5 mb-2">Add a New Console</h2>
@@ -104,12 +102,15 @@ const AddConsole = () => {
                 <label htmlFor="consoleType" className="form-label">
                   Console Type
                 </label>
-                <div>
-                  <ConsoleTypeSelector
-                    handleConsoleInputChange={handleConsoleInputChange}
-                    newConsole={newConsole}
-                  />
-                </div>
+                <input
+                  className="form-control"
+                  required
+                  id="consoleType"
+                  type="text"
+                  name="consoleType"
+                  value={newConsole.consoleType}
+                  onChange={handleConsoleInputChange}
+                />
               </div>
 
               <div className="mb-3">

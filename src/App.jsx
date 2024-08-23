@@ -15,10 +15,18 @@ import Checkout from "./components/renting/Checkout";
 import RentingSuccess from "./components/renting/RentingSuccess";
 import Renting from "./components/renting/Renting";
 import FindRenting from "./components/renting/FindRenting";
+import Login from "./components/auth/Login";
+import Registration from "./components/auth/Registration";
+import Profile from "./components/auth/Profile";
+import Logout from "./components/auth/Logout";
+import RequireAuth from "./components/auth/RequireAuth";
+import { AuthProvider } from "./components/auth/AuthProvider";
 
 function App() {
   return (
-    <main>
+    <AuthProvider>
+      {" "}
+      {/* Wrap Router with AuthProvider */}
       <Router>
         <NavBar />
         <Routes>
@@ -28,14 +36,32 @@ function App() {
           <Route path="/add-console" element={<AddConsole />} />
           <Route path="/rent-console/:consoleId" element={<Checkout />} />
           <Route path="/browse-consoles" element={<ConsoleListing />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              <RequireAuth>
+                <Admin />
+              </RequireAuth>
+            }
+          />
           <Route path="/renting-success" element={<RentingSuccess />} />
           <Route path="/existing-renting" element={<Renting />} />
           <Route path="/find-renting" element={<FindRenting />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </Router>
       <Footer />
-    </main>
+    </AuthProvider>
   );
 }
 
